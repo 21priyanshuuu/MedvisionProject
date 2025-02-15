@@ -57,11 +57,7 @@ export default function HomePage() {
           animate={{ y: 0 }}
           transition={{ duration: 0.8 }}
         >
-<<<<<<< HEAD
           ⚙️ Key Features
-=======
-          ⚙ Key Features
->>>>>>> 691b37a2c60190acc848b0b7c53b2a591952dac0
         </motion.h2>
         <div className="grid md:grid-cols-3 gap-6">
           {[
@@ -127,11 +123,7 @@ export default function HomePage() {
           animate={{ y: 0 }}
           transition={{ duration: 0.8 }}
         >
-<<<<<<< HEAD
           🛠️ Why A.I. for Healthcare?
-=======
-          🛠 Why A.I. for Healthcare?
->>>>>>> 691b37a2c60190acc848b0b7c53b2a591952dac0
         </motion.h2>
         <motion.p
           className="text-lg text-gray-300 mb-4"

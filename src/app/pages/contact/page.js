@@ -1,186 +1,222 @@
-"use client";
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+"use client"
+
+import { useState } from "react"
+import { motion } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { MapPin, Phone, Mail, Send, Loader2 } from "lucide-react"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
-  });
+  })
 
-  const [status, setStatus] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!formData.name || !formData.email || !formData.message) {
-      setStatus("Please fill in all fields.");
-      return;
+      setStatus("Please fill in all fields.")
+      return
     }
 
-    setLoading(true);
-    setStatus("");
+    setLoading(true)
+    setStatus("")
 
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
-      });
-      const result = await response.json();
+      })
+      const result = await response.json()
       if (response.ok) {
-        setStatus("Message sent successfully!");
-        setFormData({ name: "", email: "", message: "" });
+        setStatus("Message sent successfully!")
+        setFormData({ name: "", email: "", message: "" })
       } else {
-        setStatus(result.error || "Failed to send message.");
+        setStatus(result.error || "Failed to send message.")
       }
     } catch (error) {
-      console.error("Error submitting contact form:", error);
-      setStatus("Failed to send message. Please try again later.");
+      console.error("Error submitting contact form:", error)
+      setStatus("Failed to send message. Please try again later.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
+
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6 },
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100">
-      {/* Header */}
-      <section className="text-center py-12">
-        <h1 className="text-4xl md:text-5xl font-bold text-blue-400">📞 Contact Us</h1>
-        <p className="text-lg text-gray-300 mt-4">
-          Have questions? We're here to help!
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Hero Section */}
+      <section className="relative py-20">
+        <motion.div
+          className="max-w-7xl mx-auto px-6 text-center"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400">
+            Get in Touch
+          </h1>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Have questions about our AI-powered healthcare platform? We're here to help!
+          </p>
+        </motion.div>
       </section>
 
-      {/* Contact Info */}
-      <section className="flex flex-col md:flex-row justify-around items-center px-6 py-10">
-        {/* Info Cards */}
-        <div className="flex flex-col space-y-6 mb-6 md:mb-0">
-          <div className="flex items-center space-x-4 bg-gray-800 p-4 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
-            <FaMapMarkerAlt className="text-red-500 text-3xl" />
-            <div>
-              <p className="font-bold text-lg">Our Address</p>
-              <p className="text-sm text-gray-300">123 A.I. Street, Pune, India</p>
-            </div>
-          </div>
+      {/* Contact Section */}
+      <section className="max-w-7xl mx-auto px-6 pb-24">
+        <div className="grid md:grid-cols-2 gap-12">
+          {/* Contact Info Cards */}
+          <motion.div className="space-y-6" initial="initial" animate="animate" variants={fadeIn}>
+            <h2 className="text-2xl font-semibold text-white mb-8">Contact Information</h2>
 
-          <div className="flex items-center space-x-4 bg-gray-800 p-4 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
-            <FaPhoneAlt className="text-green-500 text-3xl" />
-            <div>
-              <p className="font-bold text-lg">Phone</p>
-              <p className="text-sm text-gray-300">+91 98765 43210</p>
-            </div>
-          </div>
+            {[
+              {
+                icon: <MapPin className="w-5 h-5" />,
+                title: "Visit Us",
+                content: "123 A.I. Street, Pune, India",
+                color: "from-blue-500/20 to-blue-600/20",
+              },
+              {
+                icon: <Phone className="w-5 h-5" />,
+                title: "Call Us",
+                content: "+91 98765 43210",
+                color: "from-cyan-500/20 to-cyan-600/20",
+              },
+              {
+                icon: <Mail className="w-5 h-5" />,
+                title: "Email Us",
+                content: "support@healthchain.io",
+                color: "from-teal-500/20 to-teal-600/20",
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Card
+                  className={`bg-gradient-to-br ${item.color} border-0 hover:scale-105 transition-transform duration-300`}
+                >
+                  <CardContent className="flex items-center space-x-4 p-6">
+                    <div className="p-3 rounded-full bg-white/10">{item.icon}</div>
+                    <div>
+                      <h3 className="font-semibold text-white">{item.title}</h3>
+                      <p className="text-gray-300">{item.content}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
 
-          <div className="flex items-center space-x-4 bg-gray-800 p-4 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
-            <FaEnvelope className="text-yellow-500 text-3xl" />
-            <div>
-              <p className="font-bold text-lg">Email</p>
-              <p className="text-sm text-gray-300">support@healthchain.io</p>
-            </div>
-          </div>
+          {/* Contact Form */}
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white">Send us a Message</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {status && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`p-4 mb-6 rounded-lg ${
+                      status.includes("successfully") ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"
+                    }`}
+                  >
+                    {status}
+                  </motion.div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-gray-200">
+                      Name
+                    </Label>
+                    <Input
+                      type="text"
+                      id="name"
+                      name="name"
+                      placeholder="Enter your name"
+                      className="bg-slate-900/50 border-slate-700 text-white placeholder:text-gray-400"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-gray-200">
+                      Email
+                    </Label>
+                    <Input
+                      type="email"
+                      id="email"
+                      name="email"
+                      placeholder="Enter your email"
+                      className="bg-slate-900/50 border-slate-700 text-white placeholder:text-gray-400"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="message" className="text-gray-200">
+                      Message
+                    </Label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      placeholder="Enter your message"
+                      className="bg-slate-900/50 border-slate-700 text-white placeholder:text-gray-400 min-h-[150px]"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 mr-2" />
+                        Send Message
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
-
-        {/* Contact Form */}
-        <div className="w-full md:w-2/3 lg:w-1/2 bg-gray-900 p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-6 text-blue-300">📝 Send Us a Message</h2>
-          {status && (
-            <p
-              className={`mb-4 text-center ${
-                status.includes("successfully") ? "text-green-400" : "text-red-400"
-              }`}
-            >
-              {status}
-            </p>
-          )}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name */}
-            <div>
-              <Label htmlFor="name">Name</Label>
-              <Input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Enter your name"
-                className="mt-2 bg-gray-800 border-gray-600"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter your email"
-                className="mt-2 bg-gray-800 border-gray-600"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* Message */}
-            <div>
-              <Label htmlFor="message">Message</Label>
-              <Textarea
-                id="message"
-                name="message"
-                rows={4}
-                placeholder="Enter your message"
-                className="mt-2 bg-gray-800 border-gray-600"
-                value={formData.message}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-500"
-            >
-              {loading ? "Sending..." : "Send Message"}
-            </Button>
-          </form>
-        </div>
-      </section>
-
-      {/* Map Section */}
-      <section className="py-10 px-6 text-center">
-        <h2 className="text-3xl font-semibold mb-6 text-green-300">📍 Visit Us</h2>
-        <div className="h-64 w-full rounded-lg overflow-hidden shadow-lg">
-          {/* Placeholder for map - can be replaced with Google Maps iframe */}
-          <img
-            src="https://via.placeholder.com/800x300?text=Map+Placeholder"
-            alt="Map location"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="text-center py-10 px-4 bg-gray-900">
-        <h2 className="text-4xl font-semibold mb-4 text-blue-400">Join Us in Revolutionizing Healthcare!</h2>
-        <p className="text-gray-300 mb-6">A.I.-powered healthcare data management for a better tomorrow.</p>
-        <Button className="bg-blue-600 hover:bg-blue-500 text-lg">
-          <a href="/register">Get Started</a>
-        </Button>
       </section>
     </div>
-  );
+  )
 }
