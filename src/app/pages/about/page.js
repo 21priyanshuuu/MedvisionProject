@@ -9,9 +9,9 @@ export default function AboutPage() {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100">
       {/* Hero Section */}
       <section className="text-center py-16 px-4">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4 text-blue-400">Empowering Healthcare with Blockchain</h1>
+        <h1 className="text-4xl md:text-6xl font-bold mb-4 text-blue-400">Empowering Healthcare with A.I.</h1>
         <p className="text-lg md:text-xl text-gray-300 mb-6">
-          A secure, transparent, and efficient healthcare data management system powered by blockchain technology.
+          A secure, transparent, and efficient healthcare data management system powered by A.I. technology.
         </p>
         <Button className="bg-blue-600 hover:bg-blue-500 text-white text-lg">
           <Link href="/register">Get Started</Link>
@@ -24,7 +24,7 @@ export default function AboutPage() {
         <p className="text-lg text-gray-200 leading-relaxed">
           Our mission is to revolutionize the healthcare industry by introducing a decentralized, immutable, and secure 
           platform for managing patient records, hospital data, and doctor credentials. We believe in leveraging 
-          blockchain technology to enhance transparency, efficiency, and patient-centric care.
+          A.I. technology to enhance transparency, efficiency, and patient-centric care.
         </p>
       </section>
 
@@ -76,7 +76,7 @@ export default function AboutPage() {
               <CardTitle>Secure Data Sharing</CardTitle>
             </CardHeader>
             <CardContent>
-              Leverage blockchain encryption to ensure the confidentiality and integrity of healthcare data.
+              Leverage A.I. encryption to ensure the confidentiality and integrity of healthcare data.
             </CardContent>
           </Card>
         </div>
@@ -93,7 +93,7 @@ export default function AboutPage() {
               className="w-32 h-32 mx-auto rounded-full mb-3 border-4 border-blue-400"
             />
             <p className="font-medium">Tanay</p>
-            <p className="text-sm text-gray-300">Founder & Blockchain Developer</p>
+            <p className="text-sm text-gray-300">Founder & A.I. Developer</p>
           </div>
           <div className="w-40 text-center">
             <img
@@ -120,7 +120,7 @@ export default function AboutPage() {
               className="w-32 h-32 mx-auto rounded-full mb-3 border-4 border-yellow-400"
             />
             <p className="font-medium">Vikram</p>
-            <p className="text-sm text-gray-300">Blockchain Architect</p>
+            <p className="text-sm text-gray-300">A.I. Architect</p>
           </div>
         </div>
       </section>

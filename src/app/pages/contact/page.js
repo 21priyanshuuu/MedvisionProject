@@ -69,7 +69,7 @@ export default function ContactPage() {
             <FaMapMarkerAlt className="text-red-500 text-3xl" />
             <div>
               <p className="font-bold text-lg">Our Address</p>
-              <p className="text-sm text-gray-300">123 Blockchain Street, Pune, India</p>
+              <p className="text-sm text-gray-300">123 A.I. Street, Pune, India</p>
             </div>
           </div>
 
@@ -176,7 +176,7 @@ export default function ContactPage() {
       {/* Call to Action */}
       <section className="text-center py-10 px-4 bg-gray-900">
         <h2 className="text-4xl font-semibold mb-4 text-blue-400">Join Us in Revolutionizing Healthcare!</h2>
-        <p className="text-gray-300 mb-6">Blockchain-powered healthcare data management for a better tomorrow.</p>
+        <p className="text-gray-300 mb-6">A.I.-powered healthcare data management for a better tomorrow.</p>
         <Button className="bg-blue-600 hover:bg-blue-500 text-lg">
           <a href="/register">Get Started</a>
         </Button>
