@@ -4,7 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
+// 🟡 Enhanced Doctor Profile Page
 export default function DoctorDetailsPage() {
   const [formData, setFormData] = useState({
     name: "",
@@ -29,7 +35,6 @@ export default function DoctorDetailsPage() {
   useEffect(() => {
     async function fetchDoctorDetails() {
       try {
-        // ✅ Fetch user session
         const sessionRes = await fetch("/api/auth/session");
         const sessionData = await sessionRes.json();
 
@@ -41,7 +46,6 @@ export default function DoctorDetailsPage() {
             email: email || "",
           }));
 
-          // ✅ Check if doctor profile exists
           const profileRes = await fetch(`/api/doctors?email=${email}`);
           const profileData = await profileRes.json();
 
@@ -83,7 +87,7 @@ export default function DoctorDetailsPage() {
       const data = await res.json();
       if (res.ok) {
         setMessage("Doctor profile created successfully!");
-        window.location.reload(); // ✅ Reload the page after creation
+        window.location.reload();
       } else {
         setMessage(data.error || "Failed to create profile.");
       }
@@ -108,7 +112,7 @@ export default function DoctorDetailsPage() {
       const data = await res.json();
       if (res.ok) {
         setMessage("Doctor profile updated successfully!");
-        window.location.reload(); // ✅ Reload the page after update
+        window.location.reload();
       } else {
         setMessage(data.error || "Failed to update profile.");
       }
@@ -117,21 +121,23 @@ export default function DoctorDetailsPage() {
       setMessage("Error updating profile.");
     } finally {
       setLoading(false);
-      setIsEditing(false); // Exit editing mode
+      setIsEditing(false);
     }
   };
 
+  // 🟡 Loading State
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
         <p className="text-lg text-blue-400">Loading...</p>
       </div>
     );
   }
 
+  // 🔴 Error State
   if (message) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
         <p className="text-lg text-red-400">{message}</p>
       </div>
     );
@@ -140,31 +146,41 @@ export default function DoctorDetailsPage() {
   // ✅ Show Doctor Profile with Option to Edit
   if (isProfileExists && !isEditing) {
     return (
-      <div className="max-w-xl mx-auto mt-10 p-6 bg-gray-900 text-white rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-center">👨‍⚕️ Doctor Profile</h2>
-        <Card className="bg-gray-800 text-gray-200">
-          <CardHeader>
-            <CardTitle>Doctor Information</CardTitle>
+      <div className="max-w-4xl mx-auto p-8 bg-gradient-to-b from-gray-800 to-gray-900 text-white rounded-lg shadow-xl border border-gray-700">
+        <h2 className="text-3xl font-bold mb-6 text-center text-teal-400">👨‍⚕️ Doctor Profile</h2>
+
+        <Card className="bg-gray-800 border border-gray-700">
+          <CardHeader className="flex items-center gap-4">
+            <Avatar className="w-20 h-20 bg-teal-500 text-xl">
+              <AvatarFallback>{formData.name.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <div>
+              <CardTitle className="text-2xl font-semibold text-yellow-300">{formData.name}</CardTitle>
+              <p className="text-gray-400 text-sm">{formData.email}</p>
+              <Badge className="mt-2 bg-teal-600">{formData.specialization}</Badge>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <p><strong>Name:</strong> {formData.name}</p>
-            <p><strong>Email:</strong> {formData.email}</p>
-            <p><strong>Specialization:</strong> {formData.specialization}</p>
-            <p><strong>Experience:</strong> {formData.experience} years</p>
-            <p><strong>Degree:</strong> {formData.degree}</p>
-            <p><strong>Clinic Location:</strong> {formData.clinicLocation}</p>
-            <p><strong>Fees:</strong> ${formData.fees}</p>
-            <p><strong>Contact:</strong> {formData.contactNumber}</p>
-            <p><strong>Hospital Affiliation:</strong> {formData.hospitalAffiliation}</p>
-            <p><strong>Availability:</strong> {formData.availability}</p>
-            <p><strong>Bio:</strong> {formData.bio}</p>
+
+          <Separator className="my-4 border-gray-600" />
+
+          <CardContent className="grid grid-cols-2 gap-4 text-gray-300 text-sm">
+            <p><strong>📚 Degree:</strong> {formData.degree}</p>
+            <p><strong>🏥 Hospital:</strong> {formData.hospitalAffiliation}</p>
+            <p><strong>📍 Location:</strong> {formData.clinicLocation}</p>
+            <p><strong>💵 Fees:</strong> ${formData.fees}</p>
+            <p><strong>📞 Contact:</strong> {formData.contactNumber}</p>
+            <p><strong>🕒 Availability:</strong> {formData.availability}</p>
+            <p><strong>🔬 Experience:</strong> {formData.experience} years</p>
+            <p className="col-span-2"><strong>📝 Bio:</strong> {formData.bio}</p>
           </CardContent>
         </Card>
+
+        {/* Edit Profile Button */}
         <Button
           onClick={() => setIsEditing(true)}
-          className="w-full bg-yellow-500 hover:bg-yellow-400 mt-4"
+          className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-semibold mt-6"
         >
-          Edit Profile
+          ✏️ Edit Profile
         </Button>
       </div>
     );
@@ -172,111 +188,114 @@ export default function DoctorDetailsPage() {
 
   // ✅ Show Doctor Creation/Update Form
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-gray-900 text-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center">
+    <div className="max-w-4xl mx-auto p-8 bg-gradient-to-b from-gray-800 to-gray-900 text-white rounded-lg shadow-lg">
+      <h2 className="text-3xl font-bold mb-6 text-center text-teal-400">
         {isProfileExists ? "✏️ Update Doctor Profile" : "👨‍⚕️ Create Doctor Profile"}
       </h2>
 
-      <div className="space-y-4">
-        <div>
-          <Label>Name</Label>
-          <Input name="name" value={formData.name} placeholder="Full Name" disabled />
+      <ScrollArea className="h-[500px] border border-gray-700 rounded-lg p-4 space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label className="text-gray-400">Name</Label>
+            <Input name="name" value={formData.name} placeholder="Full Name" disabled className="bg-gray-800" />
+          </div>
+
+          <div>
+            <Label className="text-gray-400">Email</Label>
+            <Input name="email" value={formData.email} placeholder="Email" disabled className="bg-gray-800" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label className="text-gray-400">Specialization</Label>
+            <Input
+              name="specialization"
+              value={formData.specialization}
+              onChange={handleChange}
+              placeholder="e.g. Cardiologist"
+              className="bg-gray-800"
+            />
+          </div>
+
+          <div>
+            <Label className="text-gray-400">Experience (Years)</Label>
+            <Input
+              name="experience"
+              type="number"
+              value={formData.experience}
+              onChange={handleChange}
+              placeholder="Years of experience"
+              className="bg-gray-800"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label className="text-gray-400">Degree</Label>
+            <Input
+              name="degree"
+              value={formData.degree}
+              onChange={handleChange}
+              placeholder="e.g. MBBS, MD"
+              className="bg-gray-800"
+            />
+          </div>
+
+          <div>
+            <Label className="text-gray-400">Contact Number</Label>
+            <Input
+              name="contactNumber"
+              value={formData.contactNumber}
+              onChange={handleChange}
+              placeholder="e.g. +91 9876543210"
+              className="bg-gray-800"
+            />
+          </div>
         </div>
 
         <div>
-          <Label>Email</Label>
-          <Input name="email" value={formData.email} placeholder="Email" disabled />
-        </div>
-
-        <div>
-          <Label>Specialization</Label>
-          <Input
-            name="specialization"
-            value={formData.specialization}
-            onChange={handleChange}
-            placeholder="e.g. Cardiologist"
-          />
-        </div>
-
-        <div>
-          <Label>Experience (Years)</Label>
-          <Input
-            name="experience"
-            type="number"
-            value={formData.experience}
-            onChange={handleChange}
-            placeholder="Years of experience"
-          />
-        </div>
-
-        <div>
-          <Label>Degree</Label>
-          <Input
-            name="degree"
-            value={formData.degree}
-            onChange={handleChange}
-            placeholder="e.g. MBBS, MD"
-          />
-        </div>
-
-        <div>
-          <Label>Clinic Location</Label>
-          <Input
-            name="clinicLocation"
-            value={formData.clinicLocation}
-            onChange={handleChange}
-            placeholder="e.g. Apollo Hospital, Mumbai"
-          />
-        </div>
-
-        <div>
-          <Label>Consultation Fees ($)</Label>
-          <Input
-            name="fees"
-            type="number"
-            value={formData.fees}
-            onChange={handleChange}
-            placeholder="e.g. 500"
-          />
-        </div>
-
-        <div>
-          <Label>Contact Number</Label>
-          <Input
-            name="contactNumber"
-            value={formData.contactNumber}
-            onChange={handleChange}
-            placeholder="e.g. +91 9876543210"
-          />
-        </div>
-
-        <div>
-          <Label>Hospital Affiliation</Label>
+          <Label className="text-gray-400">Hospital Affiliation</Label>
           <Input
             name="hospitalAffiliation"
             value={formData.hospitalAffiliation}
             onChange={handleChange}
             placeholder="e.g. AIIMS"
+            className="bg-gray-800"
           />
         </div>
 
         <div>
-          <Label>Availability</Label>
+          <Label className="text-gray-400">Clinic Location</Label>
+          <Input
+            name="clinicLocation"
+            value={formData.clinicLocation}
+            onChange={handleChange}
+            placeholder="e.g. Apollo Hospital, Mumbai"
+            className="bg-gray-800"
+          />
+        </div>
+
+        <div>
+          <Label className="text-gray-400">Availability</Label>
           <Input
             name="availability"
             value={formData.availability}
             onChange={handleChange}
             placeholder="e.g. Mon-Fri 10AM-5PM"
+            className="bg-gray-800"
           />
         </div>
 
         <div>
-          <Label>Bio</Label>
+          <Label className="text-gray-400">Bio</Label>
           <Input
             name="bio"
             value={formData.bio}
             onChange={handleChange}
             placeholder="Short profile summary"
+            className="bg-gray-800"
           />
         </div>
 
@@ -284,7 +303,7 @@ export default function DoctorDetailsPage() {
         {isProfileExists ? (
           <Button
             onClick={handleUpdate}
-            className="w-full bg-yellow-500 hover:bg-yellow-400"
+            className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-semibold mt-4"
             disabled={loading}
           >
             {loading ? "Updating..." : "Update Profile"}
@@ -292,7 +311,7 @@ export default function DoctorDetailsPage() {
         ) : (
           <Button
             onClick={handleCreate}
-            className="w-full bg-green-600 hover:bg-green-500"
+            className="w-full bg-green-600 hover:bg-green-500 text-white font-semibold mt-4"
             disabled={loading}
           >
             {loading ? "Creating..." : "Create Profile"}
@@ -303,12 +322,12 @@ export default function DoctorDetailsPage() {
         {isEditing && (
           <Button
             onClick={() => setIsEditing(false)}
-            className="w-full bg-red-500 hover:bg-red-400 mt-2"
+            className="w-full bg-red-500 hover:bg-red-400 text-white font-semibold mt-2"
           >
             Cancel
           </Button>
         )}
-      </div>
+      </ScrollArea>
     </div>
   );
 }

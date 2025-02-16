@@ -1,14 +1,18 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
 export default function DoctorSearchPage() {
+  const searchParams = useSearchParams();
+  const specializationFromURL = searchParams.get("specialization") || ""; // 🟡 Get from URL
+  
   const [doctors, setDoctors] = useState([]);
   const [filteredDoctors, setFilteredDoctors] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(specializationFromURL);
   const [locationQuery, setLocationQuery] = useState("");
   const [maxFees, setMaxFees] = useState("");
   const [loading, setLoading] = useState(true);
@@ -41,7 +45,6 @@ export default function DoctorSearchPage() {
         console.error("Error fetching user session:", error);
       }
     }
-
     fetchUserSession();
   }, []);
 
@@ -53,7 +56,15 @@ export default function DoctorSearchPage() {
         const data = await res.json();
         if (res.ok) {
           setDoctors(data);
-          setFilteredDoctors(data);
+          // ✅ Auto-filter if URL has specialization
+          if (specializationFromURL) {
+            const results = data.filter((doc) =>
+              doc.specialization.toLowerCase().includes(specializationFromURL.toLowerCase())
+            );
+            setFilteredDoctors(results);
+          } else {
+            setFilteredDoctors(data);
+          }
         } else {
           setMessage("Failed to load doctors.");
         }
@@ -64,11 +75,10 @@ export default function DoctorSearchPage() {
         setLoading(false);
       }
     }
-
     fetchDoctors();
-  }, []);
+  }, [specializationFromURL]);
 
-  // ✅ Handle search filtering
+  // ✅ Handle search filtering on input change
   useEffect(() => {
     const query = searchQuery.toLowerCase();
     const results = doctors.filter(
@@ -115,11 +125,9 @@ export default function DoctorSearchPage() {
       const data = await res.json();
       if (res.ok) {
         setBookingMessage(data.message || "Appointment booked successfully!");
-        // Automatically close the dialog after success
         setTimeout(() => {
           setOpenDialog(false);
           setBookingMessage("");
-          // Reset form
           setAppointmentDetails({
             patientName: "",
             patientEmail: "",
@@ -136,6 +144,7 @@ export default function DoctorSearchPage() {
     }
   };
 
+  // 🔄 Show loading state
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -144,6 +153,7 @@ export default function DoctorSearchPage() {
     );
   }
 
+  // 🚫 Show error message
   if (message) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -152,6 +162,7 @@ export default function DoctorSearchPage() {
     );
   }
 
+  // ✅ Main UI
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
       <h2 className="text-3xl font-bold mb-6 text-center">🔍 Find Your Doctor</h2>
@@ -221,18 +232,8 @@ export default function DoctorSearchPage() {
           <DialogTitle>📅 Book Appointment with Dr. {selectedDoctor?.name}</DialogTitle>
 
           {/* Auto-filled Name and Email */}
-          <Input
-            type="text"
-            placeholder="Your Name"
-            value={appointmentDetails.patientName}
-            disabled
-          />
-          <Input
-            type="email"
-            placeholder="Your Email"
-            value={appointmentDetails.patientEmail}
-            disabled
-          />
+          <Input type="text" placeholder="Your Name" value={appointmentDetails.patientName} disabled />
+          <Input type="email" placeholder="Your Email" value={appointmentDetails.patientEmail} disabled />
 
           {/* Appointment Date & Time */}
           <Input
@@ -259,12 +260,8 @@ export default function DoctorSearchPage() {
 
           {/* Dialog Actions */}
           <DialogFooter>
-            <Button className="bg-blue-500" onClick={handleSubmitAppointment}>
-              Confirm Appointment
-            </Button>
-            <Button className="bg-gray-500" onClick={() => setOpenDialog(false)}>
-              Cancel
-            </Button>
+            <Button className="bg-blue-500" onClick={handleSubmitAppointment}>Confirm Appointment</Button>
+            <Button className="bg-gray-500" onClick={() => setOpenDialog(false)}>Cancel</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

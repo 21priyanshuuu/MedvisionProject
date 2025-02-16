@@ -1,64 +1,65 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+// src/app/api/recommendations/route.js
+import { NextResponse } from "next/server";
 import { dbConnect } from "../../../lib/dbConnect";
-import Analysis from "../../../models/Analysis"; 
+import MedicalReport from "@/models/Analysis";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
+// ✅ Initialize Gemini API
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-export async function GET(request) {
-    try {
-        await dbConnect();
+export async function GET(req) {
+  try {
+    // 1️⃣ Connect to Database
+    await dbConnect();
 
-        const analyses = await Analysis.find({});  
-        if (!analyses.length) {
-            return new Response(JSON.stringify({ error: "No past analyses found" }), {
-                status: 404,
-                headers: { "Content-Type": "application/json" },
-            });
-        }
-
-        const formattedData = analyses.map(entry => ({
-            diagnosis: entry.diagnosis,
-            observations: entry.observations,
-            potential_conditions: entry.potential_conditions,
-            areas_of_concern: entry.areas_of_concern,
-        }));
-
-        const RECOMMENDATION_PROMPT = `
-        You are an experienced doctor. Based on the patient's past medical diagnoses, observations, and potential conditions, provide future health recommendations.
-        Include:
-        1. Possible future health risks
-        2. Preventive measures
-        3. Lifestyle changes to reduce risk
-        4. Routine checkups or medical tests to consider
-
-        Format response as JSON:
-        {
-            "recommendations": ["List of personalized recommendations"]
-        }
-        `;
-
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const result = await model.generateContent([RECOMMENDATION_PROMPT, JSON.stringify(formattedData)]);
-        const response = await result.response;
-        const text = await response.text();
-
-        let recommendations;
-        try {
-            const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/);
-            recommendations = jsonMatch ? JSON.parse(jsonMatch[1]) : JSON.parse(text);
-        } catch {
-            recommendations = { recommendations: [text] };
-        }
-
-        return new Response(JSON.stringify({ status: "success", recommendations }), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-        });
-
-    } catch (error) {
-        return new Response(JSON.stringify({ error: "Failed to generate recommendations", details: error.message }), {
-            status: 500,
-            headers: { "Content-Type": "application/json" },
-        });
+    // 2️⃣ Get user session and email
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+    if (!user || !user.email) {
+      return NextResponse.json({ error: "Unauthorized - No user email found" }, { status: 401 });
     }
+
+    // 3️⃣ Fetch user's medical reports
+    const reports = await MedicalReport.find({ email: user.email }).lean();
+    if (reports.length === 0) {
+      return NextResponse.json({ message: "No medical reports found" }, { status: 404 });
+    }
+
+    // 4️⃣ Prepare data for Gemini
+    const reportSummaries = reports.map((report, index) => ({
+      id: index + 1,
+      diagnosis: report.diagnosis,
+      observations: report.observations.join("; "),
+      concerns: report.areas_of_concern.join("; "),
+      createdAt: report.createdAt,
+    }));
+
+    const prompt = `
+      You are an expert healthcare assistant. Based on the patient's past medical reports, 
+      predict possible future conditions and provide preventive measures.
+
+      Patient Medical History:
+      ${JSON.stringify(reportSummaries, null, 2)}
+
+      Provide your recommendations clearly:
+      - Possible future conditions
+      - Preventive measures
+    `;
+
+    // 5️⃣ Send data to Gemini for analysis
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent(prompt);
+    const geminiResponse = result.response.text();
+
+    // 6️⃣ Return the Gemini AI recommendations
+    return NextResponse.json({
+      message: "Recommendations generated successfully",
+      recommendations: geminiResponse,
+    }, { status: 200 });
+
+  } catch (error) {
+    console.error("❌ Error generating recommendations:", error);
+    return NextResponse.json({ error: "Server error", details: error.message }, { status: 500 });
+  }
 }

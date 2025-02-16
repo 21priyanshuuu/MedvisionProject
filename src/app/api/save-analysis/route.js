@@ -3,6 +3,9 @@ import { dbConnect } from "../../../lib/dbConnect";
 import MedicalReport from "@/models/MedicalReport"; // Ensure this is the correct import
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
+
+
+
 export async function POST(req) {
   if (req.method !== "POST") {
     console.log("❌ Method not allowed:", req.method);
