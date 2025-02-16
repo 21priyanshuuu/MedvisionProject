@@ -23,7 +23,9 @@ export default function Navbar() {
           setUser(data.user);
 
           // Fetch user role only if authenticated
-          const roleRes = await fetch(`/api/users?email=${data.user.email}&type=role`);
+          const roleRes = await fetch(
+            `/api/users?email=${data.user.email}&type=role`
+          );
           const roleData = await roleRes.json();
 
           if (roleRes.ok) {
@@ -46,7 +48,7 @@ export default function Navbar() {
     Patient: [
       { label: "Search Doctors", path: "/pages/patient/searchdocs" },
       { label: "Appointments", path: "/pages/patient/myappointments" },
-      {label: "Chat", path: "/pages/chat" },
+      { label: "Chat", path: "/pages/chat" },
     ],
     Doctor: [
       { label: "My Profile", path: "/pages/doctor/docdetails" },
@@ -79,11 +81,14 @@ export default function Navbar() {
               <Link href="/pages/about">About</Link>
             </Button>
           </li>
-          {/* <li>
-            <Button variant="ghost" className="hover:bg-gray-800" asChild>
-              <Link href="/pages/contact">Contact</Link>
+          <li>
+            <Button
+              className="bg-gradient-to-r from-purple-600 to-yellow-400 text-white font-semibold px-6 py-2 rounded-full shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl"
+              asChild
+            >
+              <Link href="/pages/analyze">✨ Ai dignosis</Link>
             </Button>
-          </li> */}
+          </li>
 
           {/* Dynamic Role-Based Menu */}
           {loading ? (
@@ -103,16 +108,22 @@ export default function Navbar() {
         <div className="hidden md:flex items-center space-x-4">
           {isAuthenticated ? (
             <>
-              <Button variant="outline" className="border-gray-500 text-black hover:bg-gray-700" asChild>
-                <Link href="/pages/profile">{user?.given_name || "Profile"}</Link>
+              <Button
+                variant="outline"
+                className="border-gray-500 text-black hover:bg-gray-700"
+                asChild
+              >
+                <Link href="/pages/profile">
+                  {user?.given_name || "Profile"}
+                </Link>
               </Button>
-              <LogoutLink>
-                <Button variant="destructive" className="bg-red-600 hover:bg-red-500">Logout</Button>
-              </LogoutLink>
+              <LogoutLink className="bg-red-600 hover:bg-red-500"></LogoutLink>
             </>
           ) : (
             <LoginLink>
-              <Button className="bg-gray-700 text-gray-200 hover:bg-gray-600">Login</Button>
+              <Button className="bg-gray-700 text-gray-200 hover:bg-gray-600">
+                Login
+              </Button>
             </LoginLink>
           )}
         </div>
@@ -128,10 +139,14 @@ export default function Navbar() {
             <SheetContent side="left" className="bg-gray-900 text-gray-200">
               <ul className="flex flex-col space-y-6 text-lg mt-6">
                 <li>
-                  <Link href="/" className="hover:text-gray-400">Home</Link>
+                  <Link href="/" className="hover:text-gray-400">
+                    Home
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/pages/about" className="hover:text-gray-400">About</Link>
+                  <Link href="/pages/about" className="hover:text-gray-400">
+                    About
+                  </Link>
                 </li>
                 {/* <li>
                   <Link href="/pages/contact" className="hover:text-gray-400">Contact</Link>
@@ -143,7 +158,9 @@ export default function Navbar() {
                 ) : (
                   roleMenuItems[role]?.map((item) => (
                     <li key={item.label}>
-                      <Link href={item.path} className="hover:text-gray-400">{item.label}</Link>
+                      <Link href={item.path} className="hover:text-gray-400">
+                        {item.label}
+                      </Link>
                     </li>
                   ))
                 )}
@@ -153,16 +170,29 @@ export default function Navbar() {
               <div className="mt-6">
                 {isAuthenticated ? (
                   <>
-                    <Button variant="outline" className="w-full border-gray-500 hover:bg-gray-700" asChild>
-                      <Link href="/pages/profile">{user?.given_name || "Profile"}</Link>
+                    <Button
+                      variant="outline"
+                      className="w-full border-gray-500 hover:bg-gray-700"
+                      asChild
+                    >
+                      <Link href="/pages/profile">
+                        {user?.given_name || "Profile"}
+                      </Link>
                     </Button>
                     <LogoutLink>
-                      <Button variant="destructive" className="w-full bg-red-600 hover:bg-red-500 mt-4">Logout</Button>
+                      <Button
+                        variant="destructive"
+                        className="w-full bg-red-600 hover:bg-red-500 mt-4"
+                      >
+                        Logout
+                      </Button>
                     </LogoutLink>
                   </>
                 ) : (
                   <LoginLink>
-                    <Button className="w-full bg-gray-700 text-gray-200 hover:bg-gray-600 mt-4">Login</Button>
+                    <Button className="w-full bg-gray-700 text-gray-200 hover:bg-gray-600 mt-4">
+                      Login
+                    </Button>
                   </LoginLink>
                 )}
               </div>
