@@ -6,21 +6,39 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const ANALYSIS_PROMPT = `
-You are a medical imaging expert. Analyze this medical image (X-ray, MRI, or CT scan) and provide:
-1. A clear diagnosis if any abnormalities are present
-2. Detailed observations of any visible issues
-3. Potential medical conditions suggested by the findings
-4. Areas that require further investigation
+// List of suggested diseases to include in the prompt
+const DISEASES = [
+    "tuberculosis",
+    "pneumonia",
+    "heart diseases",
+    "Alzheimer's",
+    "malaria",
+    "breast cancer",
+    "brain tumor"
+];
 
-Format your response as a JSON-like string:
+// Function to generate a dynamic prompt ensuring only relevant diseases are considered
+function getDynamicPrompt() {
+    return `
+You are a medical imaging expert analyzing a provided medical image (X-ray, MRI, or CT scan). Your task is to detect and describe any abnormalities strictly related to the following conditions: ${DISEASES.join(", ")}.
+
+**Instructions:**
+1. **Diagnosis**: Identify if the image suggests any of the above conditions.
+2. **Observations**: List key findings and abnormalities visible in the scan.
+3. **Potential Conditions**: Only include conditions from this list: ${DISEASES.join(", ")}.
+4. **Areas of Concern**: Highlight specific regions that require further investigation.
+
+**Response Format (JSON-like)**:
 {
     "diagnosis": "Brief primary diagnosis",
     "observations": ["List of detailed observations"],
-    "potential_conditions": ["List of possible conditions"],
+    "potential_conditions": ["Only include diseases from the predefined list"],
     "areas_of_concern": ["Specific areas needing attention"]
 }
-`;
+
+Only provide responses related to the listed diseases. If no relevant abnormalities are found, return an empty 'potential_conditions' array.
+    `;
+}
 
 export async function POST(request) {
     try {
@@ -76,6 +94,7 @@ export async function POST(request) {
             }
         };
 
+        const ANALYSIS_PROMPT = getDynamicPrompt(); // Get a dynamically generated prompt
         const result = await model.generateContent([ANALYSIS_PROMPT, imagePart]);
         const response = await result.response;
         const text = await response.text();
@@ -86,6 +105,10 @@ export async function POST(request) {
         try {
             const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/);
             analysis = jsonMatch ? JSON.parse(jsonMatch[1]) : JSON.parse(text);
+
+            // ✅ Filter out any conditions not in the DISEASES array
+            analysis.potential_conditions = analysis.potential_conditions?.filter(disease => DISEASES.includes(disease)) || [];
+
             console.log("✅ Parsed AI Analysis:", analysis);
         } catch (err) {
             console.error("❌ Error parsing AI response:", err);
