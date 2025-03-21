@@ -1,15 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
-export default function DoctorSearchPage() {
+// Create a client component that uses useSearchParams
+function DoctorSearch() {
   const searchParams = useSearchParams();
-  const specializationFromURL = searchParams.get("specialization") || ""; // 🟡 Get from URL
-  
+  const specializationFromURL = searchParams.get("specialization") || ""; 
   const [doctors, setDoctors] = useState([]);
   const [filteredDoctors, setFilteredDoctors] = useState([]);
   const [searchQuery, setSearchQuery] = useState(specializationFromURL);
@@ -266,5 +266,23 @@ export default function DoctorSearchPage() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+// Loading fallback component
+function DoctorSearchFallback() {
+  return (
+    <div className="flex items-center justify-center h-screen">
+      <p className="text-lg text-blue-400">Loading page...</p>
+    </div>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function DoctorSearchPage() {
+  return (
+    <Suspense fallback={<DoctorSearchFallback />}>
+      <DoctorSearch />
+    </Suspense>
   );
 }
