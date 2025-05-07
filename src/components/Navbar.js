@@ -48,12 +48,12 @@ export default function Navbar() {
     Patient: [
       { label: "Search Doctors", path: "/pages/patient/searchdocs" },
       { label: "Appointments", path: "/pages/patient/myappointments" },
-      { label: "Chat", path: "/pages/chat" },
+      { label: "Ask AI", path: "/pages/chat" },
     ],
     Doctor: [
       { label: "My Profile", path: "/pages/doctor/docdetails" },
       { label: "Patient List", path: "/pages/doctor/patients" },
-      { label: "Chat", path: "/pages/chat" },
+      
     ],
     Hospital: [
       { label: "Manage Staff", path: "/pages/hospital/staff" },
@@ -62,28 +62,28 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-gray-900 text-gray-200 shadow-md">
+    <nav className="bg-green-900 text-green-100 shadow-md">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
-        <div className="text-2xl font-bold tracking-wide">
+        <div className="text-2xl font-bold tracking-wide text-green-100">
           <Link href="/">Healthcare A.I.</Link>
         </div>
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex space-x-6 text-lg">
           <li>
-            <Button variant="ghost" className="hover:bg-gray-800" asChild>
+            <Button variant="ghost" className="hover:bg-green-800" asChild>
               <Link href="/">Home</Link>
             </Button>
           </li>
           <li>
-            <Button variant="ghost" className="hover:bg-gray-800" asChild>
+            <Button variant="ghost" className="hover:bg-green-800" asChild>
               <Link href="/pages/about">About</Link>
             </Button>
           </li>
           <li>
             <Button
-              className="bg-gradient-to-r from-purple-600 to-yellow-400 text-white font-semibold px-6 py-2 rounded-full shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl"
+              className="bg-green-600 text-white font-semibold px-6 py-2 rounded-full shadow-lg transition-transform transform hover:scale-105 hover:bg-green-700"
               asChild
             >
               <Link href="/report">✨ Ai dignosis</Link>
@@ -92,15 +92,26 @@ export default function Navbar() {
 
           {/* Dynamic Role-Based Menu */}
           {loading ? (
-            <li className="text-gray-400">Loading...</li>
+            <li className="text-green-400">Loading...</li>
           ) : (
-            roleMenuItems[role]?.map((item) => (
-              <li key={item.label}>
-                <Button variant="ghost" className="hover:bg-gray-800" asChild>
-                  <Link href={item.path}>{item.label}</Link>
-                </Button>
-              </li>
-            ))
+            <>
+              {roleMenuItems[role]?.map((item) => (
+                <li key={item.label}>
+                  <Button variant="ghost" className="hover:bg-green-800" asChild>
+                    <Link href={item.path}>{item.label}</Link>
+                  </Button>
+                </li>
+              ))}
+              {isAuthenticated && (
+                <li>
+                  <LogoutLink>
+                    <Button variant="ghost" className="hover:bg-green-800 text-red-400 hover:text-red-500">
+                      Logout
+                    </Button>
+                  </LogoutLink>
+                </li>
+              )}
+            </>
           )}
         </ul>
 
@@ -133,36 +144,45 @@ export default function Navbar() {
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost">
-                <Menu className="w-6 h-6 text-gray-200" />
+                <Menu className="w-6 h-6 text-green-100" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="bg-gray-900 text-gray-200">
+            <SheetContent side="left" className="bg-green-900 text-green-100">
               <ul className="flex flex-col space-y-6 text-lg mt-6">
                 <li>
-                  <Link href="/" className="hover:text-gray-400">
+                  <Link href="/" className="hover:text-green-400">
                     Home
                   </Link>
                 </li>
                 <li>
-                  <Link href="/pages/about" className="hover:text-gray-400">
+                  <Link href="/pages/about" className="hover:text-green-400">
                     About
                   </Link>
                 </li>
                 {/* <li>
-                  <Link href="/pages/contact" className="hover:text-gray-400">Contact</Link>
+                  <Link href="/pages/contact" className="hover:text-green-400">Contact</Link>
                 </li> */}
 
                 {/* Dynamic Role-Based Menu */}
                 {loading ? (
-                  <li className="text-gray-400">Loading...</li>
+                  <li className="text-green-400">Loading...</li>
                 ) : (
-                  roleMenuItems[role]?.map((item) => (
-                    <li key={item.label}>
-                      <Link href={item.path} className="hover:text-gray-400">
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))
+                  <>
+                    {roleMenuItems[role]?.map((item) => (
+                      <li key={item.label}>
+                        <Link href={item.path} className="hover:text-green-400">
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                    {isAuthenticated && (
+                      <li>
+                        <LogoutLink className="hover:text-green-400 text-red-400">
+                          Logout
+                        </LogoutLink>
+                      </li>
+                    )}
+                  </>
                 )}
               </ul>
 

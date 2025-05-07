@@ -153,27 +153,27 @@ export default function DoctorSearchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <h2 className="text-3xl font-bold mb-6 text-center">🔍 Find Your Doctor</h2>
+    <div className="min-h-screen bg-white text-green-900 p-6">
+      <h2 className="text-3xl font-bold mb-6 text-center text-green-800">🔍 Find Your Doctor</h2>
 
       {/* Search Filters */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <Input
-          className="w-full"
+          className="w-full border-green-300 focus:border-green-500"
           type="text"
           placeholder="Search by name, specialization, or hospital..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <Input
-          className="w-full"
+          className="w-full border-green-300 focus:border-green-500"
           type="text"
           placeholder="Search by location..."
           value={locationQuery}
           onChange={(e) => setLocationQuery(e.target.value)}
         />
         <Input
-          className="w-full"
+          className="w-full border-green-300 focus:border-green-500"
           type="number"
           placeholder="Maximum fees ($)"
           value={maxFees}
@@ -183,21 +183,21 @@ export default function DoctorSearchPage() {
 
       {/* Recommend Button */}
       <div className="flex justify-center mb-6">
-        <Button className="bg-blue-500 hover:bg-blue-400" onClick={recommendDoctors}>
+        <Button className="bg-green-600 hover:bg-green-500" onClick={recommendDoctors}>
           Recommend Best (by Experience)
         </Button>
       </div>
 
       {/* Doctor Cards */}
       {filteredDoctors.length === 0 ? (
-        <p className="text-center text-gray-400">No doctors found.</p>
+        <p className="text-center text-green-400">No doctors found.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {filteredDoctors.map((doctor) => (
-            <Card key={doctor.email} className="bg-gray-800 text-gray-200 border border-gray-700">
+            <Card key={doctor.email} className="bg-green-50 text-green-900 border border-green-200">
               <CardHeader>
-                <CardTitle className="text-xl font-semibold">{doctor.name}</CardTitle>
-                <p className="text-sm text-gray-400">{doctor.specialization}</p>
+                <CardTitle className="text-xl font-semibold text-green-800">{doctor.name}</CardTitle>
+                <p className="text-sm text-green-600">{doctor.specialization}</p>
               </CardHeader>
               <CardContent className="space-y-2">
                 <p><strong>Location:</strong> {doctor.clinicLocation}</p>
@@ -206,7 +206,7 @@ export default function DoctorSearchPage() {
                 <p><strong>Contact:</strong> {doctor.contactNumber}</p>
                 <p><strong>Hospital:</strong> {doctor.hospitalAffiliation}</p>
                 <p><strong>Availability:</strong> {doctor.availability}</p>
-                <Button className="bg-green-500 hover:bg-green-400 mt-2" onClick={() => handleBookAppointment(doctor)}>
+                <Button className="bg-green-600 hover:bg-green-500 mt-2" onClick={() => handleBookAppointment(doctor)}>
                   Book Appointment
                 </Button>
               </CardContent>

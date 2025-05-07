@@ -8,7 +8,7 @@ export default function MyAppointmentsPage() {
   const [appointments, setAppointments] = useState([]);
   const [message, setMessage] = useState("");
 
-  // ✅ Automatically fetch patient appointments using session
+  // Automatically fetch patient appointments using session
   useEffect(() => {
     async function fetchAppointments() {
       const sessionRes = await fetch("/api/auth/session");
@@ -39,25 +39,25 @@ export default function MyAppointmentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <h2 className="text-3xl font-bold mb-6 text-center">
+    <div className="min-h-screen bg-white text-green-900 p-6">
+      <h2 className="text-3xl font-bold mb-6 text-center text-green-800">
         📅 My Appointments
       </h2>
-      <Separator className="mb-6" />
+      <Separator className="mb-6 bg-green-300" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {appointments.map((appointment) => (
           <Card
             key={appointment._id}
-            className="bg-gray-800 text-gray-200 border border-gray-700 transition-transform transform hover:scale-105"
+            className="bg-green-50 text-green-900 border border-green-200 transition-transform transform hover:scale-105"
           >
-            <CardHeader className="bg-gray-700 rounded-t-lg p-4">
-              <CardTitle className="text-xl font-semibold text-blue-400">
+            <CardHeader className="bg-green-100 rounded-t-lg p-4">
+              <CardTitle className="text-xl font-semibold text-green-800">
                 Dr. {appointment.doctorName}
               </CardTitle>
-              <p className="text-sm text-gray-400">{appointment.doctorEmail}</p>
+              <p className="text-sm text-green-600">{appointment.doctorEmail}</p>
             </CardHeader>
-            <Separator />
+            <Separator className="bg-green-300" />
             <CardContent className="space-y-3 p-4">
               <p>
                 <strong>Date:</strong> {appointment.appointmentDate}

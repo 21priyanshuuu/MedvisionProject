@@ -2,7 +2,15 @@
 
 import { useState, useEffect } from "react";
 
-const seasons = {
+type DiagnosisType = {
+  "Possible Diagnosis"?: string;
+  "Potential Disease"?: string;
+  "Symptoms"?: string[];
+  "Recommended Treatment"?: string[];
+  "Prevention Tips"?: string[];
+};
+
+const seasons: Record<string, string> = {
   spring: "bg-gradient-to-r from-green-400 to-blue-500",
   summer: "bg-gradient-to-r from-yellow-400 to-orange-500",
   autumn: "bg-gradient-to-r from-yellow-600 to-red-600",
@@ -11,7 +19,7 @@ const seasons = {
 
 export default function Home() {
   const [symptoms, setSymptoms] = useState("");
-  const [diagnosis, setDiagnosis] = useState(null);
+  const [diagnosis, setDiagnosis] = useState<DiagnosisType | string | null>(null);
   const [currentSeason, setCurrentSeason] = useState("spring");
 
   useEffect(() => {
@@ -22,7 +30,7 @@ export default function Home() {
     else setCurrentSeason("winter");
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await fetch("/api/diagnose", {
@@ -41,41 +49,63 @@ export default function Home() {
   return (
     <main className={`min-h-screen flex items-center justify-center ${seasons[currentSeason]}`}>
       <div className="bg-white bg-opacity-90 p-8 rounded-lg shadow-lg max-w-2xl w-full">
-        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Virtual Health Consultant</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
+          Virtual Health Consultant
+        </h1>
+
         {diagnosis ? (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-center">Diagnosis Report</h2>
-            <div className="bg-gray-100 p-4 rounded-lg border border-gray-300">
-              <p className="text-lg font-semibold">Possible Diagnosis:</p>
-              <p className="text-gray-800">{diagnosis["Possible Diagnosis"] || "N/A"}</p>
-              <p className="text-lg font-semibold mt-2">Potential Disease:</p>
-              <p className="text-gray-800">{diagnosis["Potential Disease"] || "N/A"}</p>
-              <p className="text-lg font-semibold mt-2">Symptoms:</p>
-              <ul className="list-disc list-inside text-gray-800">
-                {diagnosis["Symptoms"]?.map((symptom, index) => (
-                  <li key={index}>{symptom}</li>
-                )) || "N/A"}
-              </ul>
-              <p className="text-lg font-semibold mt-2">Recommended Treatment:</p>
-              <ul className="list-disc list-inside text-gray-800">
-                {diagnosis["Recommended Treatment"]?.map((treatment, index) => (
-                  <li key={index}>{treatment}</li>
-                )) || "N/A"}
-              </ul>
-              <p className="text-lg font-semibold mt-2">Prevention Tips:</p>
-              <ul className="list-disc list-inside text-gray-800">
-                {diagnosis["Prevention Tips"]?.map((tip, index) => (
-                  <li key={index}>{tip}</li>
-                )) || "N/A"}
-              </ul>
+          typeof diagnosis === "object" ? (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-semibold text-center">Diagnosis Report</h2>
+              <div className="bg-gray-100 p-4 rounded-lg border border-gray-300">
+                <p className="text-lg font-semibold">Possible Diagnosis:</p>
+                <p className="text-gray-800">{diagnosis["Possible Diagnosis"] || "N/A"}</p>
+
+                <p className="text-lg font-semibold mt-2">Potential Disease:</p>
+                <p className="text-gray-800">{diagnosis["Potential Disease"] || "N/A"}</p>
+
+                <p className="text-lg font-semibold mt-2">Symptoms:</p>
+                <ul className="list-disc list-inside text-gray-800">
+                  {diagnosis["Symptoms"]?.length ? (
+                    diagnosis["Symptoms"].map((symptom, index) => <li key={index}>{symptom}</li>)
+                  ) : (
+                    <li>N/A</li>
+                  )}
+                </ul>
+
+                <p className="text-lg font-semibold mt-2">Recommended Treatment:</p>
+                <ul className="list-disc list-inside text-gray-800">
+                  {diagnosis["Recommended Treatment"]?.length ? (
+                    diagnosis["Recommended Treatment"].map((treatment, index) => (
+                      <li key={index}>{treatment}</li>
+                    ))
+                  ) : (
+                    <li>N/A</li>
+                  )}
+                </ul>
+
+                <p className="text-lg font-semibold mt-2">Prevention Tips:</p>
+                <ul className="list-disc list-inside text-gray-800">
+                  {diagnosis["Prevention Tips"]?.length ? (
+                    diagnosis["Prevention Tips"].map((tip, index) => <li key={index}>{tip}</li>)
+                  ) : (
+                    <li>N/A</li>
+                  )}
+                </ul>
+              </div>
+
+              <button
+                onClick={() => setDiagnosis(null)}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
+              >
+                New Consultation
+              </button>
             </div>
-            <button
-              onClick={() => setDiagnosis(null)}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
-            >
-              New Consultation
-            </button>
-          </div>
+          ) : (
+            <div className="bg-red-100 text-red-800 p-4 rounded-lg text-center font-semibold">
+              {diagnosis}
+            </div>
+          )
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>

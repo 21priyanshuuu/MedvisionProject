@@ -32,8 +32,24 @@ export async function GET(req) {
       role: user.role,
     });
   } catch (error) {
-    console.error("Error fetching user:", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error("Error fetching user:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    
+    // Specific error handling
+    if (error.name === 'MongoServerError') {
+      return NextResponse.json({
+        error: "Database authentication failed",
+        details: error.message
+      }, { status: 401 });
+    }
+    
+    return NextResponse.json({
+      error: "Server error",
+      details: error.message
+    }, { status: 500 });
   }
 }
 

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import {dbConnect} from "@/lib/dbConnect";
 import Appointment from "@/models/Appointment";
-// ✅ GET: Fetch Appointments for Doctor or Patient
+//  Fetch Appointments for Doctor or Patient
 export async function GET(req) {
   await dbConnect();
   const email = req.nextUrl.searchParams.get("email");
@@ -21,7 +21,7 @@ export async function GET(req) {
   }
 }
 
-// ✅ PUT: Update Appointment Status
+// Update Appointment Status
 export async function PUT(req) {
   await dbConnect();
   try {
@@ -50,7 +50,7 @@ export async function PUT(req) {
   }
 }
 
-// ✅ POST: Create New Appointment
+// Create New Appointment
 export async function POST(req) {
   await dbConnect();
   try {
@@ -100,4 +100,3 @@ export async function POST(req) {
   }
 }
 
-// ✅ PUT: Update Appointment Status
