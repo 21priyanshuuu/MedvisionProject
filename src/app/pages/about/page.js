@@ -169,7 +169,7 @@ export default function AboutPage() {
                 color: "from-blue-400 to-blue-600"
               },
               {
-                image:"https://cdn6.dissolve.com/p/D2115_277_190/D2115_277_190_1200.jpg",
+                image: "https://www.shutterstock.com/image-photo/profile-photo-attractive-family-doc-600nw-1724693776.jpg",
                 name: "Michael Roberts",
                 role: "Chief Technology Officer",
                 color: "from-cyan-400 to-cyan-600"

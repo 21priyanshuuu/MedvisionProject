@@ -1,58 +1,44 @@
 "use client";
+
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function RecommendationsPage() {
-    const [recommendations, setRecommendations] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const [recommendations, setRecommendations] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        async function fetchRecommendations() {
-            try {
-                const res = await fetch("/api/recommendations");
-                const data = await res.json();
+  const fetchRecommendations = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/recommendations");
+      const data = await res.json();
+      if (res.ok) {
+        setRecommendations(data.recommendations);
+      } else {
+        alert(data.error || "Failed to fetch recommendations.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                if (res.ok) {
-                    setRecommendations(data.recommendations || []);
-                } else {
-                    throw new Error(data.error || "Failed to fetch recommendations");
-                }
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchRecommendations();
-    }, []);
-
-    return (
-        <div className="min-h-screen bg-gray-100 p-6">
-            <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
-                <h1 className="text-2xl font-semibold text-gray-800 mb-4">
-                    Future Health Recommendations 🏥
-                </h1>
-
-                {loading ? (
-                    <p className="text-center text-gray-600">Loading recommendations...</p>
-                ) : error ? (
-                    <p className="text-red-500 text-center">{error}</p>
-                ) : recommendations.length > 0 ? (
-                    <ul className="space-y-3">
-                        {recommendations.map((rec, index) => (
-                            <li 
-                                key={index} 
-                                className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg shadow-sm"
-                            >
-                                <span className="font-medium text-blue-900">{rec}</span>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-gray-600 text-center">No recommendations available.</p>
-                )}
-            </div>
-        </div>
-    );
+  return (
+    <div className="max-w-2xl mx-auto p-6">
+      <h2 className="text-2xl font-bold mb-4">🩺 AI Health Recommendations Based on Your Medical Report History</h2>
+      <Button className="mb-4 bg-blue-500 hover:bg-blue-400" onClick={fetchRecommendations} disabled={loading}>
+        {loading ? "Generating..." : "Get Recommendations"}
+      </Button>
+      <ScrollArea className="h-80 bg-gray-800 text-white p-4 rounded-lg">
+        {recommendations ? (
+          <pre className="whitespace-pre-wrap">{recommendations}</pre>
+        ) : (
+          <p className="text-gray-400">No recommendations available. Click to generate.</p>
+        )}
+      </ScrollArea>
+    </div>
+  );
 }
