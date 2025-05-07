@@ -86,7 +86,7 @@ export default function Navbar() {
               className="bg-gradient-to-r from-purple-600 to-yellow-400 text-white font-semibold px-6 py-2 rounded-full shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl"
               asChild
             >
-              <Link href="/pages/analyze">✨ Ai dignosis</Link>
+              <Link href="/report">✨ Ai dignosis</Link>
             </Button>
           </li>
 
