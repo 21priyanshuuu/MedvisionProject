@@ -48,7 +48,7 @@ export async function GET(req) {
     `;
 
     // 5️⃣ Send data to Gemini for analysis
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent(prompt);
     const geminiResponse = result.response.text();
 

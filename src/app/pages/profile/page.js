@@ -74,40 +74,40 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 to-gray-800 text-gray-100 py-10 px-4 md:px-10">
+    <div className="min-h-screen bg-white text-green-900 py-10 px-4 md:px-10">
       {/* 🟡 Layout Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* 💙 Left: User Profile Section */}
-        <Card className="bg-gray-800 border border-gray-700 shadow-xl transition hover:shadow-2xl">
+        <Card className="bg-green-50 border border-green-200 shadow-xl transition hover:shadow-2xl">
           <CardHeader className="flex items-center gap-4">
-            <Avatar className="w-24 h-24 ring-2 ring-blue-400">
-              <AvatarFallback className="bg-blue-600 text-white text-3xl">
+            <Avatar className="w-24 h-24 ring-2 ring-green-500">
+              <AvatarFallback className="bg-green-600 text-white text-3xl">
                 {user.name?.charAt(0) || "U"}
               </AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="text-3xl font-bold text-blue-300">
+              <h2 className="text-3xl font-bold text-green-800">
                 {user.name || "Unknown User"}
               </h2>
-              <p className="text-gray-400">{user.email}</p>
+              <p className="text-green-600">{user.email}</p>
               <Badge variant="secondary" className="mt-2 px-3 py-1 text-sm">
                 {user.role?.toUpperCase() || "PATIENT"}
               </Badge>
             </div>
           </CardHeader>
           <Separator />
-          <CardContent className="space-y-4 mt-4 text-gray-300">
+          <CardContent className="space-y-4 mt-4 text-green-700">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <p>
-                <strong className="text-gray-400">Gender:</strong>{" "}
+                <strong className="text-green-600">Gender:</strong>{" "}
                 {user.gender || "N/A"}
               </p>
               <p>
-                <strong className="text-gray-400">Age:</strong>{" "}
+                <strong className="text-green-600">Age:</strong>{" "}
                 {user.age || "N/A"}
               </p>
               <p>
-                <strong className="text-gray-400">Role:</strong>{" "}
+                <strong className="text-green-600">Role:</strong>{" "}
                 {user.role || "N/A"}
               </p>
               {/* <p>
@@ -119,7 +119,7 @@ export default function ProfilePage() {
             </div>
             {/* Recommendations Button */}
             <Button
-              className="w-full bg-blue-500 hover:bg-blue-400 transition"
+              className="w-full bg-green-600 hover:bg-green-700 transition"
               size="lg"
               onClick={() => router.push("/pages/recommendations")}
             >
@@ -130,12 +130,12 @@ export default function ProfilePage() {
 
         {/* 🟢 Right: Medical Reports Section */}
         <div className="flex flex-col">
-          <h2 className="text-3xl font-bold text-teal-400 mb-4">
+          <h2 className="text-3xl font-bold text-green-800 mb-4">
             🩺 Previous Medical Reports
           </h2>
-          <ScrollArea className="h-[450px] border border-gray-700 rounded-lg bg-gray-800">
+          <ScrollArea className="h-[450px] border border-green-200 rounded-lg bg-green-50">
             {medicalReports.length === 0 ? (
-              <div className="text-center text-gray-400 py-20">
+              <div className="text-center text-green-600 py-20">
                 No medical reports found.
               </div>
             ) : (
@@ -143,15 +143,15 @@ export default function ProfilePage() {
                 {medicalReports.map((report) => (
                   <Card
                     key={report._id}
-                    className="bg-gray-900 border border-gray-700 hover:border-teal-400 transition"
+                    className="bg-green-100 border border-green-300 hover:border-green-500 transition"
                   >
                     <CardHeader className="flex justify-between items-center">
-                      <CardTitle className="text-lg font-semibold text-yellow-300">
+                      <CardTitle className="text-lg font-semibold text-green-800">
                         🩹 {report.diagnosis}
                       </CardTitle>
                       <Badge
                         variant="secondary"
-                        className="text-xs bg-gray-700"
+                        className="text-xs bg-green-200"
                       >
                         {new Date(report.createdAt).toLocaleDateString()}
                       </Badge>
@@ -159,10 +159,10 @@ export default function ProfilePage() {
                     <CardContent className="space-y-3">
                       {/* Observations */}
                       <div>
-                        <p className="text-gray-300 font-semibold">
+                        <p className="text-green-800 font-semibold">
                           📝 Observations:
                         </p>
-                        <ul className="list-disc list-inside text-sm text-gray-400">
+                        <ul className="list-disc list-inside text-sm text-green-700">
                           {report.observations.map((obs, idx) => (
                             <li key={idx}>{obs}</li>
                           ))}
@@ -170,10 +170,10 @@ export default function ProfilePage() {
                       </div>
                       {/* Conditions */}
                       <div>
-                        <p className="text-yellow-400 font-semibold">
+                        <p className="text-green-700 font-semibold">
                           💡 Potential Conditions:
                         </p>
-                        <ul className="list-disc list-inside text-sm text-yellow-500">
+                        <ul className="list-disc list-inside text-sm text-green-600">
                           {report.potential_conditions.map((cond, idx) => (
                             <li key={idx}>{cond}</li>
                           ))}
@@ -181,10 +181,10 @@ export default function ProfilePage() {
                       </div>
                       {/* Areas of Concern */}
                       <div>
-                        <p className="text-red-400 font-semibold">
+                        <p className="text-green-900 font-semibold">
                           ⚠️ Areas of Concern:
                         </p>
-                        <ul className="list-disc list-inside text-sm text-red-500">
+                        <ul className="list-disc list-inside text-sm text-green-800">
                           {report.areas_of_concern.map((area, idx) => (
                             <li key={idx}>{area}</li>
                           ))}

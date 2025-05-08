@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   let model;
   for (const modelName of POSSIBLE_MODELS) {
     try {
-      model = genAI.getGenerativeModel({ model: modelName });
+      model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       break;
     } catch (error) {
       console.warn(`Failed to select model: ${modelName}`);
