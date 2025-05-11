@@ -6,9 +6,12 @@ export async function GET(req) {
   await dbConnect();
   const email = req.nextUrl.searchParams.get("email");
   const type = req.nextUrl.searchParams.get("type"); // 'doctor' or 'patient'
+  if(!email){
+    return NextResponse.json({error:"email is missing"},{status:400})
 
-  if (!email || !type) {
-    return NextResponse.json({ error: "Email and type are required" }, { status: 400 });
+  }
+  if(!type){
+    return NextResponse.json({error:"type is missing"},{status:400})
   }
 
   try {
@@ -99,4 +102,3 @@ export async function POST(req) {
     );
   }
 }
-
