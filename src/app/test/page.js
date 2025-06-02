@@ -27,16 +27,25 @@ export default function MedicalAnalysisPage() {
             return;
         }
 
-        const formData = new FormData();
-        formData.append("file", file);
         setLoading(true);
         setError(null);
 
         try {
-            const response = await fetch("/api/analyze", {
+            let response;
+            const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            response = await fetch(`${baseUrl}/api/analyze`, {
                 method: "POST",
-                body: formData,
+                body: formData
             });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Server error: ${errorText}`);
+            }
 
             const data = await response.json();
             console.log("Parsed Data:", data);
