@@ -1,3 +1,6 @@
+https://www.notion.so/MediVision-AI-Project-23882ce7713280329ef9f88b36bb5780?source=copy_link
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
